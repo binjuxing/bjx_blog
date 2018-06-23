@@ -20,28 +20,33 @@
     </el-header>
 </template>
 <script>
+    import {getCategory} from '@/api/index'
     export default {
         data(){
             return {
-                categories:[{
-                    id:1,
-                    name:'HTML'
-                },
-                {
-                    id:2,
-                    name:'PHP'
-                },
-                {
-                    id:3,
-                    name:'Python'
-                },
-                {
-                    id:4,
-                    name:'MySql'
-                }
+                categories:[
+                // {
+                //     id:1,
+                //     name:'HTML'
+                // },
+                // {
+                //     id:2,
+                //     name:'PHP'
+                // },
+                // {
+                //     id:3,
+                //     name:'Python'
+                // },
+                // {
+                //     id:4,
+                //     name:'MySql'
+                // }
                 ],
                 showList:false
             }
+        },
+        created(){
+            this.getCategory()
         },
         methods:{
             go(name){
@@ -52,7 +57,25 @@
             },
             setshow(){
                 this.showList = !this.showList;
-            }
+            },
+            getCategory(){
+                let res = getCategory();
+                res.then(res=>{
+                    let data = res.data;
+                    if(Number(data.error_code)===0){
+                        var arr = []
+                        for(var i = 0;i < data.data.length; i++){
+                            if(data.data[i].nav_show){
+                                arr.push(data.data[i])
+                            }
+                        }
+                        this.categories = arr;
+                    }else{
+                        this.$message({type: 'info',message: data.msg,duration:1500});
+                    }
+                })
+
+            },
 
         },
         mounted(){

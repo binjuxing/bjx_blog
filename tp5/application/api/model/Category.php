@@ -80,7 +80,7 @@ class Category extends BaseModel
             $da['nav_show'] = $da['nav_show']==0?false:true;
             $data[] = $da;
         }
-        cache('categories',$data,0);
+        cache('categories',$data,86400);
         self::updateTime('categories');
         return $data;
     }

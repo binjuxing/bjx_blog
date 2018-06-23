@@ -14,7 +14,7 @@
       			</div>
       			<div class="tag">
 					标签：
-      				<el-tag v-for="(tag,i) in item.tag" :key="tag.id" size="mini" :type="tagType[i]" style="margin-right: 2px;">{{tag.name}}</el-tag>
+      				<el-tag v-for="(tag,i) in item.tags" :key="tag.id" size="mini" :type="tagType[i]" style="margin-right: 2px;">{{tag.name}}</el-tag>
       			</div>
       			<div class="keywords">{{item.keywords}}</div>
       			<div class="info">
@@ -48,6 +48,7 @@
 </template>
 <script>
   import rightbox from "./right"
+  import {getCategory,getTag,getArticles} from "@/api"
   export default{
   	components:{
     	rightbox,
@@ -55,22 +56,22 @@
     data(){
 		return {
 			articles:[
-			{
-				id:1,
-				cover:'https://ss0.bdstatic.com/6ONWsjip0QIZ8tyhnq/it/u=1618097094,4154452434&fm=77&w_h=121_75&cs=423647557,799948659',
-				category_id:1,
-				title:'CentOS7下LNMP环境配置-服务器配置',
-				keywords:'服务器,centOS,LNMP',
-				click:666,
-				create_time: '2018.5.25 12:12:12',
-				tag:[{'id':1,'name':'前端'},{'id':2,'name':'js'}],
-			}
+			// {
+			// 	id:1,
+			// 	cover:'https://ss0.bdstatic.com/6ONWsjip0QIZ8tyhnq/it/u=1618097094,4154452434&fm=77&w_h=121_75&cs=423647557,799948659',
+			// 	category_id:1,
+			// 	title:'CentOS7下LNMP环境配置-服务器配置',
+			// 	keywords:'服务器,centOS,LNMP',
+			// 	click:666,
+			// 	create_time: '2018.5.25 12:12:12',
+			// 	tags:[{'id':1,'name':'前端'},{'id':2,'name':'js'}],
+			// }
 			],
 			
 			total:30,
 			size:5,
 			page:1,
-			categorys:[{id:1,name:'待定'}],
+			categories:[{id:1,name:'待定'}],
 			tagType:['success','info','warning','danger','']
 			}
     },
@@ -78,14 +79,13 @@
     	
     },
     created(){
-    	console.log(1)
-    	
+    	this.getCategory()
     },
     methods:{
     	categoryName(id){
-    		for(var i = 0;i<this.categorys.length;i++){
-    			if(this.categorys[i].id==id){
-    				return this.categorys[i].name;
+    		for(var i = 0;i<this.categories.length;i++){
+    			if(this.categories[i].id==id){
+    				return this.categories[i].name;
     			}
     		}
     	},
@@ -111,12 +111,63 @@
 	      }else
 	      if(router.path.indexOf('/home')===0){
 	      	console.log('home')
-	      	this.getData({})
+	      	this.getCategory()
 	      }
     	},
-    	getData(data={}){
-    		console.log(data)
-    	}
+    	getCategory(){
+			let res = getCategory();
+			res.then(res=>{
+				let data = res.data;
+				if(Number(data.error_code)===0){
+					this.categories = data.data;
+					this.getTag();
+				}else{
+					this.$message({type: 'info',message: data.msg,duration:1500});
+				}
+			})
+		},
+		getTag(){
+			let res = getTag();
+			res.then(res=>{
+				let data = res.data;
+				if(Number(data.error_code)===0){
+					this.tags = data.data;
+					this.getArticle()
+				}else{
+					this.$message({type: 'info',message: data.msg,duration:1500});
+				}
+			})
+		},
+		getArticle(){
+			let res = getArticles();
+			res.then(res=>{
+				if(Number(res.data.error_code)===0){
+					let data = res.data.data.data;
+					this.total = res.data.data.total;
+					for(var i=0;i<data.length;i++){
+						for(var j = 0;j<this.categories.length;j++){
+							if(data[i].category_id==this.categories[j].id){
+								data[i].category_name = this.categories[j].name;
+								break;
+							}
+						}
+
+						for(var k = 0;k<data[i].tags.length;k++){
+							for(var l = 0;l<this.tags.length;l++){
+								if(data[i].tags[k].tag_id==this.tags[l].id){
+									data[i].tags[k].name = this.tags[l].name;
+									break;
+								}
+							}
+							
+						}
+					}
+					this.articles = data;
+				}else{
+					this.$message({type: 'info',message: data.msg,duration:1500});
+				}
+			})
+		},
 
     },
     watch:{

@@ -17,7 +17,7 @@ return [
     // 应用名称
     'app_name'               => '博客',
     // 应用地址
-    'app_host'               => 'http://localhost/bjxblog/tp5/',
+    'app_host'               => 'http://localhost/bjx_blog/tp5/',
     // 应用调试模式
     'app_debug'              => true,
     // 应用Trace

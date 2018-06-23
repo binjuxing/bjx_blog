@@ -17,6 +17,7 @@ const state = {
 	categories:{},// 分类
 	tags:{}, // 标签
 	links:{}, // 友链
+	articles:{}// 文章
 }
 
 const mutations = {
@@ -52,7 +53,11 @@ const mutations = {
 	},
 	links(state,value){
 		state.links = value?value:JSON.parse(sessionStorage.getItem('links'));
+	},
+	articles(state,value){
+		state.articles = value?value:JSON.parse(sessionStorage.getItem('articles'));
 	}
+
 }
 
 const actions = {

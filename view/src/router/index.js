@@ -20,7 +20,7 @@ const mainRouter = [
     path: 'home',
     name: 'home',
     component: home,
-    meta:{title:"首页"},
+    meta:{title:"首页",keep:true},
   },
   {
     path: 'home/category/:id',
@@ -56,7 +56,7 @@ const mainRouter = [
     path: 'admin/article',
     name: 'adminArticle',
     component: adminArticle,
-    meta:{title:"文章"}
+    meta:{title:"文章",keep:true}
   },
   {
     path: 'admin/article/add',
@@ -65,10 +65,16 @@ const mainRouter = [
     meta:{title:"文章编辑"}
   },
   {
-    path: 'admin/article/edit',
+    path: 'admin/article/edit/:id',
     name: 'adminArticleEdit',
     component: adminArticleEdit,
     meta:{title:"文章编辑"}
+  },
+  {
+    path: 'admin/article/see/:id',
+    name: 'adminArticleSee',
+    component: article,
+    meta:{title:"查看文章"}
   },
   {
     path: 'admin/category',

@@ -17,10 +17,10 @@ let baseImgPath = '';
 // let getToken = ;
 
 if (process.env.NODE_ENV == 'development') {
-	baseUrl = 'http://localhost/bjxblog/tp5/public/';
-	baseImgPath = 'http://localhost/bjxblog/tp5/public/images';
+	baseUrl = 'http://localhost/bjx_blog/tp5/public/';
+	baseImgPath = 'http://localhost/bjx_blog/tp5/public/images';
 }else{
-	baseUrl = 'https://api.xch.kim/admin/api/pc';
+	baseUrl = 'https://api.binjx.top/admin/api/pc';
 	baseImgPath = '';
 }
 

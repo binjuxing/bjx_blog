@@ -6,7 +6,7 @@
 		</el-card>
 		<el-card shadow="hover">
 		<div class="ctitle">所有标签</div>
-			<el-button v-for="tag in tags" :key="tag.id" size="mini" plain :type="tagType[tag.id-1]" style="border-radius:7px;padding: 6px 10px;margin:5px 3px;" @click="$router.push('/home/tag/'+tag.id)">{{tag.name}}{{tag.count&&tag.count>0?'('+tag.count+')':''}}</el-button>
+			<el-button v-for="tag in tags" :key="tag.id" size="mini" plain :type="tagType[tag.id-1]" style="border-radius:7px;padding: 6px 10px;margin:5px 3px;" @click="$router.push('/home/tag/'+tag.id)">{{tag.name}}{{tag.article_count&&tag.article_count>0?'('+tag.article_count+')':''}}</el-button>
 		</el-card>
 		<el-card shadow="hover" >
 		<div class="ctitle">文章推荐</div>
@@ -18,7 +18,7 @@
 			<div class="link-list" v-for="item in flinks">
 				<a :href="item.url" target="_black">
 				<img class="icon" v-if="item.show" :src="item.icoUrl" alt="">
-				<i v-else class="el-icon-share"></i> 
+				<i v-else class="icon-share_link"></i> 
 				{{item.name}}
 			</a>
 			</div>
@@ -27,10 +27,11 @@
 </template>
 <script>
 	import Timer from "./time"
-	export default{
-		components:{
-    	Timer,
-    },
+	import {getTag} from "@/api"
+export default{
+	components:{
+		Timer,
+	},
     data(){
     	return {
     		links:[],
@@ -47,6 +48,7 @@
     },
     created(){
     	this.links = [{id:1,url:'https://www.liaoxuefeng.com/',name:'廖雪峰的官方网站',show:false,iconUrl:''},{id:1,url:'https://baijunyao.com',name:'白俊遥博客,技术博客,个人博客模板,php博客系统',show:false,iconUrl:''}]
+    	this.getTag();
     },
     methods:{
     	checkIco(){
@@ -62,9 +64,20 @@
 				    img.src=imgUrl;
     		}
     		return this.links
-    	}
-    }
+    	},
+    	getTag(){
+			let res = getTag();
+			res.then(res=>{
+				let data = res.data;
+				if(Number(data.error_code)===0){
+					this.tags = data.data;
+				}else{
+					this.$message({type: 'info',message: data.msg,duration:1500});
+				}
+			})
+		},
 	}
+}
 </script>
 <style>
 	

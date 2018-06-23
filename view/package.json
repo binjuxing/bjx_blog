@@ -13,7 +13,7 @@
     "axios": "^0.18.0",
     "dns": "^0.2.2",
     "element-ui": "^2.3.9",
-    "mavon-editor": "^2.6.3",
+    "mavon-editor": "^2.6.9",
     "ueditor": "^1.2.3",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",

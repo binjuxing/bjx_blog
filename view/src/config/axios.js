@@ -12,25 +12,41 @@ export default async(url,params) => {
 		needToken : true,
 		upType:''
 	}
+	// 参数赋值
 	for(var key in params){
 		c[key] = params[key];
 	}
-	let cache = c.cacheName!='';
+	// 缓存读取
+	let cache = c.cacheName!='',hasId = c.data&&c.data.id&&Number(c.data.id)>0;
 	if(cache){
 		let value = sessionStorage.getItem(c.cacheName),re,nowtime = new Date().getTime();
-		if(store.state[c.cacheName].time&&store.state[c.cacheName].time>nowtime){
-			re = store.state[c.cacheName]
+		if(store.state[c.cacheName]&&Object.keys(store.state[c.cacheName]).length>0&&hasId||
+			store.state[c.cacheName].time&&store.state[c.cacheName].time>nowtime){
+			re = store.state[c.cacheName];
 		}else if(value){
 			let val = JSON.parse(value);
-			if(val.time>nowtime){
+			if(val.data&& typeof val.data == 'string')val.data = JSON.parse(val.data);
+			if(hasId||val.time>nowtime){
 				re = val
 				store.commit(c.cacheName,val)
 			}
 		}
+		
 		if(re){
-			return new Promise((resolve, reject) => {
-				resolve({data:re})
-			})
+			if(hasId){
+				var keyName = c.cacheName+'_'+c.data.id;
+				if(re[keyName]&&re[keyName].time>nowtime){
+					if(typeof re[keyName].data == 'string')re[keyName].data = JSON.parse(re[keyName].data);
+					return new Promise((resolve, reject) => {
+						resolve({data:re[keyName]})
+					})
+				}
+			}else{
+				return new Promise((resolve, reject) => {
+					resolve({data:re})
+				})
+			}
+			
 		}
 		
 	}
@@ -61,12 +77,20 @@ export default async(url,params) => {
 			c.Loading&&store.commit("loading",false)
 			if(typeof data=='string')data = JSON.parse(data);
 			if(cache){
-				data.time = new Date().getTime()+86400000;
-				sessionStorage.setItem(c.cacheName,JSON.stringify(data))
-				store.commit(c.cacheName,data)
+				data.time = new Date().getTime()+7200000;//2小时内有效
+				if(hasId){
+					let ca = sessionStorage.getItem(c.cacheName)?JSON.parse(sessionStorage.getItem(c.cacheName)):{};
+					ca[c.cacheName+'_'+c.data.id] = data;
+					sessionStorage.setItem(c.cacheName,JSON.stringify(ca))
+					store.commit(c.cacheName,ca)
+				}else{
+					sessionStorage.setItem(c.cacheName,JSON.stringify(data))
+					store.commit(c.cacheName,data)
+				}
+				
 			}
 			
-			if(typeof data=='string')data = JSON.parse(data);
+			if(data.data&&typeof data.data=='string')data.data = JSON.parse(data.data);
 		 	// if(data.error_code===10001){
 		 	// 	router.push({name:"login"})
 		 	// }

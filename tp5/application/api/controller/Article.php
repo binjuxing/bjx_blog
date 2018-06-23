@@ -17,10 +17,18 @@ class Article extends BaseController
 {
     /*
      * 获取文章列表
-     * @url post tag/get
+     * @url get article/get
      * */
-    public function get($page = 1,$category_id = '', $tag = '', $key = ''){
-        $res = ArticleModel::getArticle($page,$category_id,$tag,$key);
+    public function gets($page = 1,$category_id = '', $tag = '', $key = ''){
+        $res = ArticleModel::getArticles($page,$category_id,$tag,$key);
+        return $this->returnData($res);
+    }
+    /*
+     * 文章详情
+     * @url get article
+     * */
+    public function get($id){
+        $res = ArticleModel::getArticle($id);
         return $this->returnData($res);
     }
     /*

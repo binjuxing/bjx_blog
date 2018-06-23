@@ -56,6 +56,10 @@ Route::group('tag',function(){
  * Article
  * */
 Route::group('article',function(){
+    // 文章详情
+    Route::get('', 'article/get');
+    // 文章列表
+    Route::get('/get', 'article/gets');
     // 图片上传
     Route::post('/upImg', 'article/upImg');
     // 保存文章

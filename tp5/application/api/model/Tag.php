@@ -29,7 +29,6 @@ class Tag extends BaseModel
         return $categories;
     }
     public function saveTag($data){
-
         // 是否新增
         $new  = !isset($data['id'])||$data['id']=='';
         if($new){
@@ -65,7 +64,7 @@ class Tag extends BaseModel
         foreach($tags as $v){
             $data[] = $v->toArray();
         }
-        cache('tags',$data,0);
+        cache('tags',$data,86400);
         self::updateTime('tags');
         return $tags;
     }

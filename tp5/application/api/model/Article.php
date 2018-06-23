@@ -9,12 +9,19 @@
 namespace app\api\model;
 
 
+use app\lib\exception\BaseException;
+use think\model\concern\SoftDelete;
+
 class Article extends BaseModel
 {
+    protected $autoWriteTimestamp = true;
+    use SoftDelete;
+    protected $deleteTime = 'delete_time';
+    protected $hidden = ['delete_time'];
     /*
      * 获取文章
      * */
-    public static function getArticle($page,$category_id,$tag,$key){
+    public static function getArticles($page,$category_id,$tag,$key){
         $article = self::with('tags');
         if($tag!=''){
 //            $article->hasWhere()
@@ -24,8 +31,18 @@ class Article extends BaseModel
             if($key!='')
                 $article->where('title|keywords','like','%'.$key.'%');
         }
-        $article->paginate(['page'=>$page,'list_rows'=>10]);
-
+        return $article->paginate(['page'=>$page,'list_rows'=>10]);
+    }
+    public static function getArticle($id){
+        $article = cache('article_'.$id);
+        if(!$article){
+            $article = self::with('tags')->where('id',$id)->find();
+            if($article)
+                cache('article_' . $id, json_encode($article->toArray()), 86400);
+            else
+                throw new BaseException('请求的文章不存在');
+        }
+        return $article;
     }
     /*
      * 保存文章
@@ -42,11 +59,13 @@ class Article extends BaseModel
                     cache('article_id',++$article->id,0);// 更新id
             }
         }else{
-            $article = self::where(['id'=>$data['id'],'user_id'=>$data['user_id']])->allowField(true)->update($data);
+            $article = self::allowField(true)->update($data,['id'=>$data['id'],'user_id'=>$data['user_id']]);
             if($article){
                 $this->articleTag($data['id'],$data['tag']);
             }
         }
+        if($article->id)
+        cache('article_'.$article->id,null);// 清除文章缓存，下次直接请求数据库
         return $article;
     }
     /*

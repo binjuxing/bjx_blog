@@ -8,9 +8,9 @@
       <Breadcrumb class="breadcrumb"></Breadcrumb>
         <el-main style="margin-bottom: 50px;height: 0;" >
           <keep-alive>
-                  <router-view v-if="$route.meta[1]"></router-view>
+            <router-view v-if="$route.meta.keep"></router-view>
           </keep-alive>
-              <router-view v-if="!$route.meta[1]"></router-view>
+            <router-view v-if="!$route.meta.keep"></router-view>
         </el-main>
         <el-footer style="position: absolute;bottom: 0px;width: 100%;min-width:757px;height: 50px;background:  rgba(123,123,123,.1);text-align: center;line-height: 50px;">
         <a href="###">Jayson</a>
@@ -149,8 +149,8 @@ export default {
 .admin .breadcrumb{width:99.8%;min-width: 757px;max-width: none;}
 
 .home-con{min-height: 500px;}
-.left-view{width:69.4%;min-width: 300px;padding-top: 20px;}
-.right{width: 30%;padding: 20px 0 0 1.6%;}
+.left-view{width:70%;min-width: 300px;padding-top: 20px;}
+.right{width: 28.4%;padding: 20px 0 0 1.6%;}
 /*.breadcrumb{margin-top: 1px;}*/
 .efooter{text-align: center;height: 50px!important;width: 100%;line-height: 50px;}
 @media screen and (max-width: 960px) {

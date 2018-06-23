@@ -6,7 +6,7 @@
       <span style="font-size:25px;">管理后台 </span>
     </div>
     <div style="display: inline-block;line-height: 50px;margin-right: 20px;cursor: pointer;">
-      <span>Admin</span> | 
+      <span> <i class="icon iconfont icon-yonghutouxiang"></i> Admin</span> | 
       <span @click="go('home')">前端</span>
     </div>
   </el-header>
